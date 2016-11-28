@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="/javascripts/angular.1.5.8.js"></script>
+</head>
+<script type="text/javascript">
+    angular.module('app', [])
+        .controller('ctrl',function($scope) {
+            $scope.args = {};
+        })
+        .directive("isolateDirective", function() {
+            return {
+                scope: {},
+                link: function($scope, $element, $attr) {
+                    console.log($scope.$args);
+                }
+            };
+        });
+
+</script>
+
+<body ng-app="app">
+    <div ng-controller="ctrl">
+        <div isolate-directive></div>
+    </div>
+</body>
+
+</html>

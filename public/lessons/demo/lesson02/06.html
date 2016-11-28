@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="/javascripts/angular.1.5.8.js"></script>
+</head>
+<script type="text/javascript">
+angular.module('app', [])
+    .controller('parentCtrl', ['$scope', function($scope) {
+        $scope.args = 'AngularJS'; 
+    }]) 
+    .controller('childCtrl', ['$scope', function($scope) { }]); 
+</script> 
+<body ng-app="app">
+    <div ng-controller="parentCtrl">
+        <input ng-model="args"> 
+        <div ng-controller="childCtrl">
+            <input ng-model="args">
+        </div>
+    </div>
+</body>
+</html>

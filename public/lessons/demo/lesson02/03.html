@@ -1,0 +1,32 @@
+<!doctype html>
+<html ng-app="myApp">
+<head>
+    <title>插值字符串</title>
+    <script src="/javascripts/angular.1.5.8.js"></script>
+</head>
+<body>
+    <div ng-controller="myController">
+        <input ng-model="to" type="email" placeholder="email" />
+        <textarea ng-model="emailBody"></textarea>
+        <pre>{{previewText}}</pre>
+    </div>
+    <script>
+        angular.module('myApp', [])
+            .controller('myController',
+                function($scope, $interpolate) {
+                    $scope.$watch('emailBody', function(body) {
+                        if (body) {
+                            var template = $interpolate(body);
+                            var obj = {
+                                to: $scope.to
+                            }
+                            $scope.previewText = template(
+                               obj
+                            )
+                        }
+                    })
+                }
+            )
+    </script>
+</body>
+</html>

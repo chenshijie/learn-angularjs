@@ -1,0 +1,31 @@
+<!doctype html>
+<html ng-app="myApp">
+<head>
+    <title>Parse Expression Example</title>
+    <script src="/javascripts/angular.1.5.8.js"></script>
+</head>
+<body>
+
+    <div ng-controller="MyController">
+        <input ng-model="expr" type="text" placeholder="Enter an expression" />
+        <div>{{ parsedExpr }}</div>
+    </div>
+    <script>
+        angular.module('myApp', [])
+            .controller('MyController', function($scope, $parse) {
+
+                $scope.person = {
+                    name: "Ari Lerner"
+                };
+
+                $scope.$watch('expr', function(newVal, oldVal, scope) {
+                    if (newVal !== oldVal) {
+                        var parseFun = $parse(newVal);
+                        scope.parsedExpr = parseFun(scope);
+                    }
+                });
+            });
+
+    </script>
+</body>
+</html>

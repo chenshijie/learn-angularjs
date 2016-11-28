@@ -1,0 +1,27 @@
+<!doctype html>
+<html ng-app="myApp">
+<head>
+    <title>自定义过滤器</title>
+    <script src="/javascripts/angular.1.5.8.js"></script>
+</head>
+<body>
+    <div ng-controller="FilterController">
+        {{ person.name | lowercase | capitalize}}
+    </div>
+    <script>
+        var app = angular.module('myApp', [])
+        app.controller('FilterController', function($scope) {
+            $scope.person = {
+                name: "angularJS"
+            };
+        });
+        app.filter('capitalize', function(){
+            return function(input) {
+                if(input) {
+                    return input[0].toUpperCase() + input.slice(1);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

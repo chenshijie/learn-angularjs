@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Introduction to AngularJS</title>
+
+    <meta name="description" content="Introduction to AngularJS">
+    <meta name="author" content="Jason Chen">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+
+    </script>
+
+    <!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+</head>
+
+<body>
+
+    <div class="reveal">
+
+        <!-- Any section element inside of this container is displayed as a slide -->
+        <div class="slides">
+            <section>
+                <img data-src="imgs/angularjs-for-header-only.svg" style="border:none;background:none;box-shadow:none;">
+                <p>AngularJS入门</p>
+                <p>
+                    <small>Created by <a href="#">Jason</a></small>
+                </p>
+                <br>
+            </section>
+
+            <section>
+                <section data-transition="slide" data-background-transition="zoom">
+                    <h2>控制器嵌套</h2>
+                    <pre><code class="hljs html" data-trim>
+&lt;!doctype html>
+&lt;html ng-app="myApp">
+&lt;head>
+    &lt;script src="/javascripts/angular.1.5.8.js">&lt;/script>
+&lt;/head>
+&lt;body>
+    &lt;div ng-controller="ParentController">
+        &lt;div ng-controller="ChildController">
+            &lt;a ng-click="sayHello()">Say hello&lt;/a>
+        &lt;/div>
+        {{ person }}
+    &lt;/div>
+    &lt;script>
+        var app = angular.module('myApp', [])
+        app.controller('ParentController', function($scope) {
+            $scope.person = {
+                greeted: false
+            };
+        });
+        app.controller('ChildController', function($scope) {
+            $scope.sayHello = function() {
+                $scope.person.name = 'Ari Lerner';
+            };
+        });
+    &lt;/script>
+&lt;/body>
+&lt;/html>
+					</code></pre>
+                    <p><a href="demo/lesson02/01.html" target="_blank">View Demo</a></p>
+                </section>
+                <section>
+                    <h2>控制器嵌套</h2>
+                    <ul>
+                        <li>AngularJS应用的任何一部分都有父级作用域的存在</li>
+                        <li>ng-app的父级作用域是$rootScope</li>
+                        <li>所有的作用域都通过原型继承而来（可以访问父级作用域）</li>
+                        <li>孤立作用域除外</li>
+                    </ul>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>作用域</h2>
+                    <ul>
+                        <li>作用域是一个指向应用模型的对象，它是表达式的执行环境</li>
+                        <li>作用域有层次结构，这个层次和相应的 DOM 几乎是一样的</li>
+                        <li>作用域能监控表达式和传递事件</li>
+                        <li>在 HTML 代码中，一旦一个 ng-app 指令被定义,那么一个作用域就产生了，由 ng-app 所生成的作用域比较特殊，它是一个根作用域（$rootScope）</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>继承作用域（Inherited Scope）</h2>
+                    <p style="text-align:left">AngularJS 在创建一个作用域时，会检索上下文，如果上下文中已经存在一个作用域，那么这个新创建的作用域就会以 JavaScript 原型继承机制继承其父作用域的属性和方法</p>
+                    <p style="text-align:left">继承作用域符合 JavaScript 的原型继承机制，这意味着如果我们在子作用域中访问一个父作用域中定义的属性，JavaScript 首先在子作用域中寻找该属性，没找到再从原型链上的父作用域中寻找，如果还没找到会再往上一级原型链的父作用域寻找</p>
+                </section>
+                <section>
+                    <h3>继承作用域-原始类型数据继承（1）</h3>
+                    <p><pre><code class="hljs html" data-trim>
+&lt;script type="text/javascript">
+angular.module('app', [])
+    .controller('parentCtrl', ['$scope', function($scope) {
+        $scope.args = 'AngularJS'; 
+    }]) 
+    .controller('childCtrl', ['$scope', function($scope) { }]); 
+&lt;/script> 
+&lt;body ng-app="app">
+    &lt;div ng-controller="parentCtrl">
+        &lt;input ng-model="args"> 
+        &lt;div ng-controller="childCtrl">
+            &lt;input ng-model="args">
+        &lt;/div>
+    &lt;/div>
+&lt;/body>
+                    </code></pre></p>
+                    <p><a href="demo/lesson02/06.html" target="_blank">View Demo</a></p>
+                </section>
+
+                <section>
+                    <h3>继承作用域-原始类型数据继承（2）</h3>
+                    <p><pre><code class="hljs html" data-trim>
+&lt;script type="text/javascript">
+angular.module('app', [])
+    .controller('parentCtrl', function($scope) {
+        $scope.args = {};
+        $scope.args.content = 'AngularJS'; 
+    }) 
+    .controller('childCtrl',function($scope) { }); 
+&lt;/script> 
+&lt;body ng-app="app">
+    &lt;div ng-controller="parentCtrl">
+        &lt;input ng-model="args.content"> 
+        &lt;div ng-controller="childCtrl">
+            &lt;input ng-model="args.content">
+        &lt;/div>
+    &lt;/div>
+&lt;/body>
+                    </code></pre></p>
+                    <p><a href="demo/lesson02/07.html" target="_blank">View Demo</a></p>
+                </section>
+                <section>
+                    <h3>作用域继承-不再访问父作用域的数据对象</h3>
+                    <p><pre><code class="hljs html" data-trim>
+&lt;script type="text/javascript">
+angular.module('app', [])
+    .controller('parentCtrl', function($scope) {
+        $scope.args = {};
+        $scope.args.content = 'AngularJS'; 
+    }) 
+    .controller('childCtrl',function($scope) {
+        $scope.args = {};
+        $scope.args.content = 'AngularJS'; 
+    }); 
+&lt;/script> 
+&lt;body ng-app="app">
+    &lt;div ng-controller="parentCtrl">
+        &lt;input ng-model="args.content"> 
+        &lt;div ng-controller="childCtrl">
+            &lt;input ng-model="args.content">
+        &lt;/div>
+    &lt;/div>
+&lt;/body>
+                    </code></pre></p>
+                    <p><a href="demo/lesson02/08.html" target="_blank">View Demo</a></p>
+                </section>
+                <section>
+                    <h3>孤立作用域（Isolate Scope）</h3>
+                    <p style="text-align:left">孤立作用域是 AngularJS 中一个非常特殊的作用域，它只在 directive 中出现。在对 directive 的定义中，我们添加上一个 scope:{} 属性，就为这个 directive 创建出了一个隔离作用域。</p>
+                    <p><pre><code class="hljs html" data-trim>
+<scrip>
+angular.module('isolate', []).directive("isolate", function () { 
+  return { 
+    scope : {},
+  }; 
+})
+</scrip>
+                    </code></pre></p>
+                    <p><a href="demo/lesson02/09.html" target="_blank">View Demo</a></p>
+                </section>
+                <section></section>
+            </section>
+            <section>
+                <section>
+                    <h2>表达式</h2>
+                    <ul>
+                        <li>所有表达式都在其所属的作用域内部执行</li>
+                        <li>如果表达式发生了TypeError和ReferenceError并不抛出异常</li>
+                        <li>不允许使用流程控制功能</li>
+                        <li>可以接收过滤器和过滤器链</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>表达式Demo</h2>
+                    <pre style="width:100%"><code class="hljs" data-trim>
+&lt;!doctype html>
+&lt;html ng-app="myApp">
+&lt;head>
+    &lt;title>Parse Expression Example&lt;/title>
+    &lt;script src="/javascripts/angular.1.5.8.js">&lt;/script>
+&lt;/head>
+&lt;body>
+
+    &lt;div ng-controller="MyController">
+        &lt;input ng-model="expr" type="text" placeholder="Enter an expression" />
+        &lt;div>{{ parsedExpr }}&lt;/div>
+    &lt;/div>
+    &lt;script>
+        angular.module('myApp', [])
+            .controller('MyController', function($scope, $parse) {
+
+                $scope.person = {
+                    name: "Ari Lerner"
+                };
+
+                $scope.$watch('expr', function(newVal, oldVal, scope) {
+                    if (newVal !== oldVal) {
+                        var parseFun = $parse(newVal);
+                        scope.parsedExpr = parseFun(scope);
+                    }
+                });
+            });
+
+    &lt;/script>
+&lt;/body>
+&lt;/html>
+
+                </code></pre>
+                    <p><a href="demo/lesson02/02.html" target="_blank">View Demo</a></p>
+                </section>
+                <section>
+                    <h2>表达式--插值字符串</h2>
+                    <pre style="width:100%"><code class="hljs" data-trim>
+                    
+&lt;!doctype html>
+&lt;html ng-app="myApp">
+&lt;head>
+    &lt;title>插值字符串&lt;/title>
+    &lt;script src="/javascripts/angular.1.5.8.js">&lt;/script>
+&lt;/head>
+&lt;body>
+    &lt;div ng-controller="myController">
+        &lt;input ng-model="to" type="email" placeholder="email" />
+        &lt;textarea ng-model="emailBody">&lt;/textarea>
+        &lt;pre>{{previewText}}&lt;/pre>
+    &lt;/div>
+    &lt;script>
+        angular.module('myApp', [])
+            .controller('myController', ['$scope', '$interpolate',
+                function($scope, $interpolate) {
+                    $scope.$watch('emailBody', function(body) {
+                        if (body) {
+                            var template = $interpolate(body);
+                            var obj = {
+                                to: $scope.to
+                            }
+                            $scope.previewText = template(
+                               obj
+                            )
+                        }
+                    })
+                }
+            ])
+    &lt;/script>
+&lt;/body>
+&lt;/html>
+
+                </code></pre>
+                    <p><a href="demo/lesson02/03.html" target="_blank">View Demo</a></p>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>过滤器</h2>
+                    <ul>
+                        <li>过滤器用来格式化需要显示的数据</li>
+                        <li>可以再模板绑定符号{{}}内通过|符号来调用过滤器{{ name | uppercase }}</li>
+                        <li>在JS代码中调用过滤器
+                            <pre style="width:100%"><code class="hljs" data-trim>
+                            $scope.name = $filter('lowercase')('Ari');
+                        </code></pre></li>
+                        <li>模板中传递参数使用“：”
+                            <pre style="width:100%"><code class="hljs" data-trim>
+                        <!--    123.46 -->
+{{ 123.456789 | number:2 }}
+                        </code></pre></li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>内置过滤器</h2>
+                    <ul>
+                        <li>currency</li>
+                        <li>date</li>
+                        <li>filter</li>
+                        <li>json</li>
+                        <li>limitTo</li>
+                        <li>lowercase</li>
+                        <li>orderBy</li>
+                        <li>uppercase</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>自定义过滤器</h2>
+                    <pre style="width:100%"><code class="hljs" data-trim>
+angular.module('myApp.filters', [])
+     .filter('capitalize', function() {
+       return function(input) {
+           if(input) {
+               return input[0].toUpperCase + input.slice(1);
+           }
+       };
+     });
+                    </code></pre>
+                    <pre style="width:100%"><code class="hljs" data-trim>
+<!-- Ginger loves dog treats -->
+{{ 'ginger loves dog treats' | lowercase | capitalize }}
+                    </code></pre>
+                    <p><a href="demo/lesson02/04.html" target="_blank">View Demo</a></p>
+                </section>
+                <section>
+                    <h2>表单验证（1）</h2>
+                    <ul>
+                        <li>必填项
+                            <pre style="width:100%"><code class="hljs" data-trim>
+<input type="text" required />
+                            </code></pre>
+                        </li>
+                        <li>最小长度
+                            <pre style="width:100%"><code class="hljs" data-trim>
+<input type="text" ng-minlength="5" />
+                            </code></pre>
+                        </li>
+                        <li>最大长度
+                            <pre style="width:100%"><code class="hljs" data-trim>
+<input type="text" ng-maxlength="20" />
+                            </code></pre>
+                        </li>
+                        <li>模式匹配
+                            <pre style="width:100%"><code class="hljs" data-trim>
+<input type="text" ng-pattern="[a-zA-Z]" />
+                            </code></pre>
+                        </li>
+
+                    </ul>
+                </section>
+                <section>
+                    <h2>表单验证（2）</h2>
+                    <ul>
+                        <li>电子邮件
+                            <pre style="width:100%"><code class="hljs" data-trim>
+<input type="email" name="email" ng-model="user.email" />
+                            </code></pre>
+                        </li>
+                        <li>数字
+                            <pre style="width:100%"><code class="hljs" data-trim>
+<input type="number" name="age" ng-model="user.age" />
+                            </code></pre>
+                        </li>
+                        <li>URL
+                            <pre style="width:100%"><code class="hljs" data-trim>
+<input type="url" name="homepage" ng-model="user.facebook_url" />
+                            </code></pre>
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Form Validation Demoxx</h2>
+                    <a href="demo/lesson02/05.html" target="_blank"><img data-src="imgs/lesson02.form.png" alt="View Demo"></a>
+                    </p>
+                </section>
+            </section>
+            <section>
+                <h2>Homework</h2>
+                <img data-src="imgs/lesson01.homework.png">
+            </section>
+            <section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
+                <h2>The End</h2>
+                <h2>Thank You</h2>
+            </section>
+
+        </div>
+
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+        // More info https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+
+            transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+            // More info https://github.com/hakimel/reveal.js#dependencies
+            dependencies: [{
+                src: 'lib/js/classList.js',
+                condition: function() {
+                    return !document.body.classList;
+                }
+            }, {
+                src: 'plugin/markdown/marked.js',
+                condition: function() {
+                    return !!document.querySelector('[data-markdown]');
+                }
+            }, {
+                src: 'plugin/markdown/markdown.js',
+                condition: function() {
+                    return !!document.querySelector('[data-markdown]');
+                }
+            }, {
+                src: 'plugin/highlight/highlight.js',
+                async: true,
+                callback: function() {
+                    hljs.initHighlightingOnLoad();
+                }
+            }, {
+                src: 'plugin/zoom-js/zoom.js',
+                async: true
+            }, {
+                src: 'plugin/notes/notes.js',
+                async: true
+            }]
+        });
+
+    </script>
+
+</body>
+
+</html>
