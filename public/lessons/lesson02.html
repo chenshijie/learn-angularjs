@@ -384,8 +384,125 @@ angular.module('myApp.filters', [])
                 </section>
             </section>
             <section>
-                <h2>Homework</h2>
-                <img data-src="imgs/lesson01.homework.png">
+                <section>
+                    <h2>同外界通信</h2>
+                    <pre style="width:100%"><code class="hljs" data-trim>
+$http({
+	method:'GET',
+	url:'/api/users.json'
+}).success(function(data,status,headers,config){
+	//do something when success
+}).error(function(data,status,headres,config){
+	//do somthing when error
+});
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>简化请求</h2>
+                    <ul>
+                        <li>$http.get(url, config)
+                        </li>
+                        <li>$http.delete(url, config)</li>
+                        <li>$http.head(url, config)</li>
+                        <li>$http.jsonp(url, config)</li>
+                        <li>$http.post(url, config)</li>
+                        <li>$http.put(url, config)</li>
+                    </ul>
+                    <p>*url:一个绝对或相对路径的URL，代表请求的目的地</p>
+                    <p>config:一个可选的设置对象</p>
+                    <p>返回对象:HttpPromise</p>
+                </section>
+                <section>
+                    <h2>config参数</h2>
+                    <pre style="width:100%"><code class="hljs" data-trim>
+var blob = new BLob(['Hello World'], {type:'text/plain'});
+$http({
+	method:'POST',//GET,DELETE,HEAD,JSONP,POST,PUT,
+	url:'/api/users.json',
+	params: {
+		name:'jason',
+		action:'search'
+	},
+	data:blob,
+	headers: {
+
+	},
+	cache:false,
+	timeout:30000
+})
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>响应对象</h2>
+                    <ul>
+                        <li>data:字符串或对象，这个对象代表转换后的响应体</li>
+                        <li>status:数值，响应的HTTP状态码</li>
+                        <li>headers:函数，可以接受一个参数，获取对应名字的值</li>
+                        <li>config:对象，原始请求的完整设置对象</li>
+                        <li>statusText:字符串，响应的HTTP状态文本</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>$http demo</h2>
+                    <pre style="width:100%"><code class="hljs" data-trim>
+&lt;!DOCTYPE html>
+&lt;html>
+&lt;head>
+    &lt;script src="/javascripts/angular.1.5.8.js">&lt;/script>
+&lt;/head>
+&lt;script type="text/javascript">
+    angular.module('app', [])
+        .controller('loadDataCtrl', function($scope, $http) {
+            $scope.user = {
+                name: '',
+                email: ''
+            };
+
+            $scope.loadData = function() {
+                var url = 'userdata.json';
+                $http.get(url).success(function(data) {
+                    $scope.user.name = data.name;
+                    $scope.user.email = data.email;
+                });
+            }
+        });
+&lt;/script>
+&lt;body ng-app="app">
+    &lt;div ng-controller="loadDataCtrl">
+        &lt;input type="button" value="Load Data From Server" ng-click="loadData();">
+        &lt;p>
+            &lt;label for="uname">UserName:&lt;/label>
+            &lt;input type="text" id="uname" ng-model="user.name">
+        &lt;/p>
+        &lt;p>
+            &lt;label for="uemail">Email:&lt;/label>
+            &lt;input type="text" id="uemail" ng-model="user.email">
+        &lt;/p>
+    &lt;/div>
+&lt;/body>
+&lt;/html>
+
+                    </code></pre>
+                    <p><a href="demo/lesson02/01.html" target="_blank">View Demo</a></p>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Homework</h2>
+                    <img data-src="imgs/lesson02.userlogin.png">
+                </section>
+                <section>
+                    <h2>Homework</h2>
+                    <ul>
+                        <li>客户端验证用户名有效性</li>
+                        <li>用户名：长度6~20</li>
+                        <li>用户名：智能是大小写英文字母</li>
+                        <li>密码：密码不能为空</li>
+                        <li>登录成功后alert显示用户名</li>
+                        <li>使用$http异步登录</li>
+                        <li>请求url可以用一个json文件替代</li>
+                    </ul>
+                </section>
             </section>
             <section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
                 <h2>The End</h2>

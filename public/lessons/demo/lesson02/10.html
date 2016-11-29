@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="/javascripts/angular.1.5.8.js"></script>
+</head>
+<script type="text/javascript">
+    angular.module('app', [])
+        .controller('loadDataCtrl', function($scope, $http) {
+            $scope.user = {
+                name: '',
+                email: ''
+            };
+
+            $scope.loadData = function() {
+                var url = 'userdata.json';
+                $http.get(url).success(function(data) {
+                    $scope.user.name = data.name;
+                    $scope.user.email = data.email;
+                });
+            }
+        });
+</script>
+<body ng-app="app">
+    <div ng-controller="loadDataCtrl">
+        <input type="button" value="Load Data From Server" ng-click="loadData();">
+        <p>
+            <label for="uname">UserName:</label>
+            <input type="text" id="uname" ng-model="user.name">
+        </p>
+        <p>
+            <label for="uemail">Email:</label>
+            <input type="text" id="uemail" ng-model="user.email">
+        </p>
+    </div>
+</body>
+</html>
