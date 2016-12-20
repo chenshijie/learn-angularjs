@@ -1,0 +1,1 @@
+{ "sites": [ { "Name": "SINA", "Url": "http://www.sina.com.cn", "Country": "CN" }, { "Name": "Google", "Url": "www.google.com", "Country": "USA" }, { "Name": "Facebook", "Url": "www.facebook.com", "Country": "USA" }, { "Name": "微博", "Url": "www.weibo.com", "Country": "CN" } ] }
